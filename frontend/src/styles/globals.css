@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 245, 245, 245;
+  --background-end-rgb: 255, 255, 255;
+  --primary-color: 106, 27, 154;
+  --accent-color: 142, 36, 170;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 30, 30, 30;
+  --primary-color: 74, 20, 140;
+  --accent-color: 156, 39, 176;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply bg-glass-DEFAULT backdrop-blur-md border border-white/20 dark:border-white/10;
+  }
+  
+  .glass-card {
+    @apply glass-effect rounded-xl shadow-lg;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-DEFAULT hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-glass-light hover:bg-glass-DEFAULT text-black font-medium py-2 px-4 rounded-lg transition-colors dark:text-white;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-900;
+  }
+  
+  .glass-card {
+    @apply glass-effect rounded-xl p-6 shadow-lg;
+  }
+  
+  .nav-link {
+    @apply text-gray-800 hover:text-primary-DEFAULT dark:text-white dark:hover:text-accent-light transition-colors;
+  }
+}

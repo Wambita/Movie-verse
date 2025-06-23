@@ -10,18 +10,27 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          light: '#4B5563', // gray-600
-          DEFAULT: '#1F2937', // gray-800
-          dark: '#111827', // gray-900
+          light: '#9C27B0', // purple-500
+          DEFAULT: '#6A1B9A', // purple-800
+          dark: '#4A148C', // purple-900
         },
         accent: {
-          light: '#DBEAFE', // blue-100
-          DEFAULT: '#3B82F6', // blue-500
-          dark: '#1E40AF', // blue-800
+          light: '#E1BEE7', // purple-100
+          DEFAULT: '#8E24AA', // purple-600
+          dark: '#4A148C', // purple-900
+        },
+        glass: {
+          light: 'rgba(255, 255, 255, 0.25)',
+          DEFAULT: 'rgba(255, 255, 255, 0.15)',
+          dark: 'rgba(0, 0, 0, 0.3)',
         },
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+      },
+      backdropFilter: {
+        'none': 'none',
+        'blur': 'blur(8px)',
       },
     },
   },
