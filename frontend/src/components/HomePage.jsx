@@ -10,10 +10,11 @@ import TrendingSection from './TrendingSection';
 import placeholderImage from '../assets/placeholder.svg';
 import { useRouter } from 'next/router';
 import useWatchlist from '../hooks/useWatchlist';
-
+import { useTheme } from '../features/theme/ThemeContext'; 
 const HomePage = () => {
   const router = useRouter();
   const { watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
+  const { theme } = useTheme();
   const [content, setContent] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
@@ -22,7 +23,13 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const loadingRef = useRef(false);
+
+  const handleSearchResults = useCallback((results) => {
+    setSearchResults(results);
+    setIsSearching(results.length > 0);
+  }, []);
 
   const handleImageError = (e) => {
     e.target.src = placeholderImage;
@@ -49,12 +56,12 @@ const HomePage = () => {
 
   const fetchContent = async (pageNum) => {
     if (loadingRef.current) return;
-    
+
     try {
       loadingRef.current = true;
       setLoading(true);
       setError(null);
-      
+
       let data;
       if (selectedGenre) {
         data = await (contentFilter === 'tv'
@@ -64,7 +71,6 @@ const HomePage = () => {
         data = await getTrending(pageNum);
       }
 
-      // Filter content based on contentFilter if it's not 'all'
       const filteredResults = contentFilter === 'all'
         ? data.results
         : data.results.filter(item => {
@@ -137,19 +143,16 @@ const HomePage = () => {
 
   const renderContent = () => {
     const items = searchResults.length > 0 ? searchResults : content;
-    
+
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 py-8">
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
+            className={`${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} rounded-lg overflow-hidden shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl`}
           >
-            <div
-              onClick={() => handleItemClick(item)}
-              className="cursor-pointer"
-            >
-              <div className="relative aspect-[2/3] bg-gray-200 dark:bg-gray-700">
+            <div onClick={() => handleItemClick(item)} className="cursor-pointer">
+              <div className={`relative aspect-[2/3] ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}>
                 <img
                   src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : placeholderImage}
                   alt={item.title || item.name}
@@ -159,8 +162,10 @@ const HomePage = () => {
                 />
               </div>
               <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2 dark:text-white">{item.title || item.name}</h3>
-                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                <h3 className={`font-semibold text-lg mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'} line-clamp-2`}>
+                  {item.title || item.name}
+                </h3>
+                <div className={`flex items-center space-x-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                   <span>{new Date(item.release_date || item.first_air_date).getFullYear()}</span>
                   {item.vote_average && (
                     <span>• {item.vote_average.toFixed(1)} ⭐</span>
@@ -182,40 +187,51 @@ const HomePage = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <section className="text-center py-8">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Welcome to MovieVerse
-        </h1>
-        <p className="text-lg opacity-75 mb-8">
-          Discover amazing movies and TV shows
-        </p>
-        
-        <TrendingSection
-          onFilterChange={handleFilterChange}
-          activeFilter={contentFilter}
-        />
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className="space-y-8 container mx-auto px-4">
+        <section className="text-center py-12">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Welcome to MovieVerse
+          </h1>
+          <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+            Discover amazing movies and TV shows
+          </p>
 
-        <GenreFilter
-          mediaType={contentFilter === 'all' ? 'movie' : contentFilter}
-          onGenreSelect={handleGenreSelect}
-        />
-      </section>
+          <TrendingSection
+            onFilterChange={handleFilterChange}
+            activeFilter={contentFilter}
+          />
 
-      <SearchBar onSearch={setSearchResults} />
+          <GenreFilter
+            mediaType={contentFilter === 'all' ? 'movie' : contentFilter}
+            onGenreSelect={handleGenreSelect}
+          />
+        </section>
 
-      {error && (
-        <div className="text-center text-red-500 py-4">{error}</div>
-      )}
+        <SearchBar onSearch={setSearchResults} />
 
-      {renderContent()}
+        {error && (
+          <div className={`text-center py-6 px-4 rounded-lg ${theme === 'dark' ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-500'}`}>
+            <p className="flex items-center justify-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {error}
+            </p>
+          </div>
+        )}
 
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading more content...</p>
-        </div>
-      )}
+        {renderContent()}
+
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-current border-t-transparent text-purple-500"></div>
+            <p className={`mt-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+              Loading more content...
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
