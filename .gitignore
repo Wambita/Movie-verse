@@ -67,7 +67,4 @@ pids
 *.pid
 *.seed
 *.pid.lock
-
-# Optional t
-
-.trae/node_modules/
+./trae
