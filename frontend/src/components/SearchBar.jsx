@@ -31,7 +31,7 @@ const SearchBar = ({ onResultsChange }) => {
   );
 
   const handleSearchChange = (event) => {
-    const value = event.target.value;
+    const value = event.target.value.toLowerCase();
     setSearchTerm(value);
     debouncedSearch(value);
   };
@@ -44,7 +44,7 @@ const SearchBar = ({ onResultsChange }) => {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search movies..."
-          className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 dark:border-gray-700"
+          className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         />
         {loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">

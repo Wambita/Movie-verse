@@ -45,7 +45,7 @@ export async function getTrending(page = 1) {
 }
 
 export async function searchMovies(query, page = 1) {
-  return fetchFromTMDB('/search/movie', { query, page });
+  return fetchFromTMDB('/search/movie', { query: query.toLowerCase(), page });
 }
 
 export async function getMovieDetails(movieId) {
