@@ -1,185 +1,120 @@
-# 🎬 MovieVerse – Movie & TV Discovery Web App
+# MovieVerse
 
-## 📌 Project Description
+MovieVerse is a responsive web application that allows users to discover, explore, and manage their favorite movies and TV shows. It integrates with The Movie Database (TMDB) and the Open Movie Database (OMDB) to provide detailed information, real-time search, and a personalized experience through a watchlist feature.
 
-MovieVerse is a responsive web application that allows users to explore, search, and manage movies and TV shows. The platform integrates with TMDB and OMDB APIs to provide real-time data including posters, cast, plots, and ratings.
+## Features
 
-Users can:
-- Search for movies and TV shows with live results
-- View detailed information about titles
-- Add/remove content from a personal watchlist
-- Browse trending content by category
+- Search for movies and TV shows with real-time results
+- View detailed information including title, plot, cast, release date, ratings, and poster
+- Add or remove movies and shows from a personal watchlist
+- Browse trending content by category or genre
 - Toggle between light and dark themes
+- Ratings integration from TMDB, IMDb, and Rotten Tomatoes
 
-## 🚀 Core Features
+## Technologies Used
 
-- **Search functionality**: Search for movies and TV shows with real-time results.
-- **Detailed View Pages**: Show title, plot, cast, ratings, release date, and poster images.
-- **Personal Watchlist Management**: Add/remove titles, mark as watched.
-- **Trending Content Dashboard**: Discover popular movies and shows.
-- **Genre-based Filtering**: Browse content by genre and category.
-- **User Ratings Integration**: From multiple sources (IMDB, Rotten Tomatoes, TMDB).
-- **Recommendation Engine**: Based on user's watchlist preferences.
-- **Responsive Design**: Adapts to mobile and desktop viewing.
+- React (with Hooks)
+- Next.js 
+- Tailwind CSS
+- TMDB API
+- OMDB API
+- localStorage (for storing watchlist and preferences)
+- Git & GitHub for version control and code review
 
-## 🛠️ Technical Requirements
-
-- **API Integration**: Utilize TMDB API for core data and OMDB API for detailed ratings. Implement `async/await` with `try/catch` for error handling.
-- **Loading States & Fallbacks**: Show loading states and fallback UIs for missing data.
-- **Pagination**: For search results and content lists.
-- **API Caching**: Cache API responses to improve performance.
-- **Rate Limiting**: Handle API rate limiting gracefully.
-- **Secure API Key Management**: Using environment variables.
-- **Debouncing**: Implement debouncing for search input.
-
-## 🗄️ Data Management
-
-- **LocalStorage**: Store user preferences and watchlists.
-- **Data Sync**: Between TMDB and OMDB APIs.
-- **Fallback Handling**: Gracefully handle missing data.
-- **Data Validation**: For API responses.
-
-## 📂 Folder & File Structure
+## Project Structure
 
 ```
+
 src/
+├── assets/              # Static files and images
 ├── components/          # Reusable UI components
-├── features/            # Feature-specific components (e.g., search, watchlist, theme)
+├── features/            # Feature-specific folders
 │   ├── search/
 │   ├── movie-details/
 │   ├── trending/
 │   ├── watchlist/
 │   └── theme/
-├── services/            # API logic (tmdb.js, omdb.js)
-├── utils/               # Utility functions (debounce, storage, helpers)
-├── hooks/               # Custom React hooks
-├── pages/               # Next.js pages
-├── assets/              # Static assets like images
-└── styles/              # Global styles
-```
+├── pages/               # Route-level components (optional)
+├── services/            # API logic (e.g., tmdb.js, omdb.js)
+├── utils/               # Utility functions (debounce, formatters, storage)
+├── App.jsx
+└── main.jsx
 
-## 🎨 Styling
+````
 
-- **Tailwind CSS**: Used for styling.
-- **Responsive Layout**: Adapts to mobile, tablet, and desktop views.
-- **Dark/Light Theme Toggle**: Supported.
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Installation
+## Installation & Setup
 
 1. Clone the repository:
-   ```bash
-   git clone <your-repository-url>
-   cd Movie-verse
-   ```
 
-2. Install backend dependencies:
-   ```bash
-   cd backend
-   npm install
-   ```
+```bash
+git clone https://github.com/Wambita/Movie-verse.git
+cd Movie-verse
+````
 
-3. Install frontend dependencies:
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+2. Install dependencies:
 
-### Environment Variables
-
-Create a `.env` file in the `backend` directory and a `.env.local` file in the `frontend` directory with your API keys:
-
-**`backend/.env`**
-```env
-PORT=3001
-TMDB_API_KEY=YOUR_TMDB_API_KEY
-OMDB_API_KEY=YOUR_OMDB_API_KEY
+```bash
+npm install
 ```
 
-**`frontend/.env.local`**
-```env
-NEXT_PUBLIC_TMDB_API_KEY=YOUR_TMDB_API_KEY
-NEXT_PUBLIC_OMDB_API_KEY=YOUR_OMDB_API_KEY
+3. Add environment variables:
+
+Create a `.env` file in the root of your project and include:
+
+```
+VITE_TMDB_API_KEY=your_tmdb_api_key
+VITE_OMDB_API_KEY=your_omdb_api_key
 ```
 
-Replace `YOUR_TMDB_API_KEY` and `YOUR_OMDB_API_KEY` with your actual API keys from TMDB and OMDB.
+> Note: If you're using Create React App, prefix with `REACT_APP_` instead of `VITE_`.
 
-### Running the Application
+4. Run the development server:
 
-1. Start the backend server:
-   ```bash
-   cd backend
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
-2. Start the frontend development server:
-   ```bash
-   cd ../frontend
-   npm run dev
-   ```
+## Environment Variables
 
-   The frontend application will be accessible at `http://localhost:3000` (or another port if 3000 is in use).
+| Key                 | Description  |
+| ------------------- | ------------ |
+| `VITE_TMDB_API_KEY` | TMDB API Key |
+| `VITE_OMDB_API_KEY` | OMDB API Key |
 
-## 🤝 Pair Programming & Code Review Process
+## Development Workflow
 
-This project emphasizes collaborative development and code review. Please adhere to the following guidelines:
+* Each feature is developed on its own Git branch using a consistent naming convention:
 
-1.  **Partner Assignment**: Work in pairs for mutual code reviews.
-2.  **Repository Setup**: Each candidate creates their own GitHub repository from scratch.
-3.  **Cross-Review System**: You will review your partner's code, and they will review yours.
-4.  **Collaboration Requirements**:
-    *   Exchange GitHub repository links with your partner.
-    *   Review each other's PRs within the given timeframe (e.g., 36 hours).
-    *   Provide constructive feedback on code quality, best practices, and functionality.
-    *   Respond professionally to feedback received.
+  * `feature/search`
+  * `feature/movie-details`
+  * `feature/watchlist`
+  * `feature/trending`
+  * `feature/theme-toggle`
 
-## ✅ GitHub Process Checklist
+* Descriptive and clear commit messages are used for each change:
 
-1.  **Initialize Repository**: Create a new GitHub repository for your project.
-2.  **Create Feature Branches**: For major functionality (e.g., `feature/search-and-discovery`, `feature/watchlist-management`).
-3.  **Make Commits**: At least 5 commits with clear, descriptive messages (e.g., `feat: add search with debounce and API call`, `fix: handle empty TMDB responses gracefully`).
-4.  **Push Branches**: Push your feature branches to your GitHub repository.
-5.  **Open Pull Requests**: Against your main branch.
-6.  **Request Review**: From your assigned partner.
-7.  **Review Partner's PRs**: Provide meaningful feedback on:
-    *   Code structure and organization
-    *   API integration implementation
-    *   Error handling approaches
-    *   User experience considerations
-    *   Performance optimizations
-8.  **Address Feedback**: On your own PRs.
-9.  **Do Not Merge Your Own PRs**: Until after peer review is complete.
+  * `feat: add search input with debounce`
+  * `fix: handle missing ratings from OMDB`
+  * `refactor: extract movie card component`
 
-## 📝 Code Review Guidelines
+* After development, feature branches are pushed and opened as pull requests against `main`.
 
--   **Be Constructive**: Focus on code improvement, not criticism.
--   **Be Specific**: Point to exact lines and suggest alternatives.
--   **Ask Questions**: If something is unclear, ask for clarification.
--   **Acknowledge Good Work**: Highlight well-implemented features.
--   **Check for**: API error handling, code reusability, naming conventions, performance considerations.
+## Contribution Guidelines
 
-## ✨ Bonus Features (Implemented/Planned)
+* Keep code modular and easy to maintain
+* Reuse components where possible
+* Handle all API errors gracefully
+* Test on mobile and desktop viewports
+* Avoid committing `.env` or sensitive information
 
--   **Dark/Light Theme Toggle**
--   Advanced filtering by year, rating, runtime
--   Social features - share favorite movies
--   Watch providers integration (Netflix, Hulu, etc.)
--   Trailer integration using YouTube API
--   Export watchlist as PDF or CSV
+## API References
 
-## 📊 Evaluation Criteria
+* [TMDB API Documentation](https://developer.themoviedb.org/docs)
+* [OMDB API Documentation](http://www.omdbapi.com/)
 
--   Quality of code and architecture
--   Effective API integration and error handling
--   Thoroughness and professionalism of code reviews given
--   Responsiveness to feedback received
--   Git workflow and commit quality
--   Feature completeness and user experience
+## License
 
-This task tests both individual development skills and collaborative code review abilities that are essential in team-based development environments.
+This project is open-source and available under the MIT License.
+
+## Author
+This project was  built and maintained  by **Wambita**

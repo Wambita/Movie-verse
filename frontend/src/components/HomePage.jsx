@@ -177,7 +177,7 @@ const HomePage = () => {
               <WatchlistButton
                 isInWatchlist={isInWatchlist(item.id)}
                 onToggleWatchlist={(e) => handleWatchlistToggle(item, e)}
-                className="w-full"
+                className={`w-full ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
               />
             </div>
           </div>
