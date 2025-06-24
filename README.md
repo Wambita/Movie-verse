@@ -14,7 +14,7 @@ MovieVerse is a responsive web application that allows users to discover, explor
 ## Technologies Used
 
 - React (with Hooks)
-- React Router DOM (or Next.js pages if using Next)
+- Next.js pages if using Next
 - Tailwind CSS
 - TMDB API
 - OMDB API
