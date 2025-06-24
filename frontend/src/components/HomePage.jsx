@@ -9,7 +9,9 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
   const loadingRef = useRef(false);
+  const maxRetries = 3;
 
   const fetchTrendingContent = async (pageNum) => {
     if (loadingRef.current) return;
@@ -20,20 +22,40 @@ const HomePage = () => {
       setError(null);
       
       const data = await getTrending(pageNum);
-      const enhancedData = await Promise.all(
+      const enhancedData = await Promise.allSettled(
         data.results.map(async (item) => {
           if (item.media_type === 'movie') {
-            const enhanced = await getEnhancedMovieDetails(item.id);
-            return { ...item, ...enhanced };
+            try {
+              const enhanced = await getEnhancedMovieDetails(item.id);
+              return { ...item, ...enhanced };
+            } catch (error) {
+              console.warn(`Failed to get enhanced details for movie ${item.id}:`, error);
+              return item;
+            }
           }
           return item;
         })
       );
 
-      setTrendingContent(prev => pageNum === 1 ? enhancedData : [...prev, ...enhancedData]);
+      const processedData = enhancedData
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value);
+
+      setTrendingContent(prev => pageNum === 1 ? processedData : [...prev, ...processedData]);
       setHasMore(data.page < data.total_pages);
+      setRetryCount(0); // Reset retry count on successful fetch
     } catch (err) {
-      setError('Failed to fetch trending content');
+      console.error('Error fetching trending content:', err);
+      setError(
+        retryCount < maxRetries
+          ? 'Failed to fetch content. Retrying...'
+          : 'Failed to fetch content. Please try again later.'
+      );
+      
+      if (retryCount < maxRetries) {
+        setRetryCount(prev => prev + 1);
+        setTimeout(() => fetchTrendingContent(pageNum), 2000 * (retryCount + 1));
+      }
     } finally {
       setLoading(false);
       loadingRef.current = false;
@@ -97,18 +119,35 @@ const HomePage = () => {
       </div>
 
       {loading && (
-        <div className="text-center py-4">
+        <div className="text-center py-4 space-y-2">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+          {retryCount > 0 && (
+            <p className="text-sm text-gray-500">
+              Retry attempt {retryCount} of {maxRetries}...
+            </p>
+          )}
         </div>
       )}
 
       {error && (
-        <div className="text-center py-4 text-red-500">
-          {error}
+        <div className="text-center py-4">
+          <p className="text-red-500 mb-2">{error}</p>
+          {retryCount >= maxRetries && (
+            <button
+              onClick={() => {
+                setRetryCount(0);
+                setError(null);
+                fetchTrendingContent(page);
+              }}
+              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+            >
+              Try Again
+            </button>
+          )}
         </div>
       )}
 
-      {!hasMore && !loading && (
+      {!hasMore && !loading && !error && (
         <div className="text-center py-4 text-gray-500">
           No more content to load
         </div>
