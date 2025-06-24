@@ -2,9 +2,11 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getTrending } from '../services/tmdb';
 import { getEnhancedMovieDetails } from '../services/enhanced';
 import { throttle } from '../utils/debounce';
+import SearchBar from './SearchBar';
 
 const HomePage = () => {
   const [trendingContent, setTrendingContent] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -64,18 +66,21 @@ const HomePage = () => {
 
   const handleScroll = useCallback(
     throttle(() => {
+      if (searchResults.length > 0) return; // Disable infinite scroll during search
       if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 500) {
         if (!loading && hasMore) {
           setPage(prev => prev + 1);
         }
       }
     }, 500),
-    [loading, hasMore]
+    [loading, hasMore, searchResults.length]
   );
 
   useEffect(() => {
-    fetchTrendingContent(page);
-  }, [page]);
+    if (searchResults.length === 0) {
+      fetchTrendingContent(page);
+    }
+  }, [page, searchResults.length]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -88,13 +93,16 @@ const HomePage = () => {
         <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
           Welcome to MovieVerse
         </h1>
-        <p className="text-lg opacity-75">
+        <p className="text-lg opacity-75 mb-8">
           Discover trending movies and TV shows
         </p>
+        <div className="max-w-2xl mx-auto px-4">
+          <SearchBar onResultsChange={setSearchResults} />
+        </div>
       </section>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {trendingContent.map((item, index) => (
+        {(searchResults.length > 0 ? searchResults : trendingContent).map((item, index) => (
           <div
             key={`${item.id}-${index}`}
             className="bg-opacity-40 backdrop-blur-md rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
