@@ -14,7 +14,7 @@ MovieVerse is a responsive web application that allows users to discover, explor
 ## Technologies Used
 
 - React (with Hooks)
-- React Router DOM (or Next.js pages if using Next)
+- Next.js 
 - Tailwind CSS
 - TMDB API
 - OMDB API
@@ -47,8 +47,8 @@ src/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/movieverse.git
-cd movieverse
+git clone https://github.com/Wambita/Movie-verse.git
+cd Movie-verse
 ````
 
 2. Install dependencies:
@@ -116,5 +116,5 @@ npm run dev
 
 This project is open-source and available under the MIT License.
 
-```
-
+## Author
+This project was  built and maintained  by **Wambita**
