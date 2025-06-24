@@ -1,8 +1,12 @@
-const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || 'your_tmdb_api_key';
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-
 import { getCachedData, setCachedData } from '../utils/cache';
 import { tmdbLimiter } from '../utils/rateLimiter';
+
+const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+
+if (!TMDB_API_KEY) {
+  console.error('TMDB API key is not set in environment variables');
+}
 
 async function fetchFromTMDB(endpoint, params = {}, cacheTime = 5 * 60 * 1000) {
   const queryString = new URLSearchParams({
@@ -28,7 +32,7 @@ async function fetchFromTMDB(endpoint, params = {}, cacheTime = 5 * 60 * 1000) {
         await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
         return fetchFromTMDB(endpoint, params, cacheTime);
       }
-      throw new Error(`TMDB API request failed: ${response.status}`);
+      throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
