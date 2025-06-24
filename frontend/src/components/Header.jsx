@@ -16,7 +16,6 @@ const Header = () => {
             <nav className="hidden md:flex space-x-4">
               <Link href="/" className="hover:text-purple-500 transition-colors">Home</Link>
               <Link href="/search" className="hover:text-purple-500 transition-colors">Search</Link>
-              <Link href="/trending" className="hover:text-purple-500 transition-colors">Trending</Link>
               <Link href="/watchlist" className="hover:text-purple-500 transition-colors">Watchlist</Link>
             </nav>
           </div>

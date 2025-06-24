@@ -47,24 +47,7 @@ const GenreFilter = ({ mediaType, onGenreSelect }) => {
     );
   }
 
-  if (error) {
-    return (
-      <div className={`text-center py-4 px-4 rounded-lg ${theme === 'dark' ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-500'}`}>
-        <p className="flex items-center justify-center gap-2">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {error}
-        </p>
-        <button
-          onClick={() => fetchGenres()}
-          className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${theme === 'dark' ? 'bg-purple-600 hover:bg-purple-700 text-white' : 'bg-purple-100 hover:bg-purple-200 text-purple-700'}`}
-        >
-          Try again
-        </button>
-      </div>
-    );
-  }
+ 
 
   return (
     <div className="max-w-4xl mx-auto">
