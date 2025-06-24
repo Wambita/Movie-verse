@@ -49,9 +49,25 @@ export async function searchMovies(query, page = 1) {
 }
 
 export async function getMovieDetails(movieId) {
-  return fetchFromTMDB(`/movie/${movieId}`);
+  const [details, credits, videos, similar] = await Promise.all([
+    fetchFromTMDB(`/movie/${movieId}`, { append_to_response: 'videos,images' }),
+    fetchFromTMDB(`/movie/${movieId}/credits`),
+    fetchFromTMDB(`/movie/${movieId}/videos`),
+    fetchFromTMDB(`/movie/${movieId}/similar`)
+  ]);
+  return { ...details, credits, videos, similar };
 }
 
 export async function getTVDetails(tvId) {
-  return fetchFromTMDB(`/tv/${tvId}`);
+  const [details, credits, videos, similar] = await Promise.all([
+    fetchFromTMDB(`/tv/${tvId}`, { append_to_response: 'videos,images' }),
+    fetchFromTMDB(`/tv/${tvId}/credits`),
+    fetchFromTMDB(`/tv/${tvId}/videos`),
+    fetchFromTMDB(`/tv/${tvId}/similar`)
+  ]);
+  return { ...details, credits, videos, similar };
+}
+
+export async function getMediaDetails(id, mediaType) {
+  return mediaType === 'movie' ? getMovieDetails(id) : getTVDetails(id);
 }

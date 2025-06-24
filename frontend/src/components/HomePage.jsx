@@ -4,8 +4,10 @@ import { getEnhancedMovieDetails } from '../services/enhanced';
 import { throttle } from '../utils/debounce';
 import SearchBar from './SearchBar';
 import placeholderImage from '../assets/placeholder.svg';
+import { useRouter } from 'next/router';
 
 const HomePage = () => {
+  const router = useRouter();
   const [trendingContent, setTrendingContent] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
@@ -18,7 +20,12 @@ const HomePage = () => {
 
   const handleImageError = (e) => {
     e.target.src = placeholderImage;
-    e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+    e.target.onerror = null;
+  };
+
+  const handleItemClick = (item) => {
+    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+    router.push(`/${type}/${item.id}`);
   };
 
   const fetchTrendingContent = async (pageNum) => {
@@ -93,28 +100,18 @@ const HomePage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  return (
-    <div className="space-y-8">
-      <section className="text-center py-8">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Welcome to MovieVerse
-        </h1>
-        <p className="text-lg opacity-75 mb-8">
-          Discover trending movies and TV shows
-        </p>
-        <div className="max-w-2xl mx-auto px-4">
-          <SearchBar onResultsChange={setSearchResults} />
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {(searchResults.length > 0 ? searchResults : trendingContent).map((item, index) => (
+  const renderContent = () => {
+    const items = searchResults.length > 0 ? searchResults : trendingContent;
+    
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {items.map((item) => (
           <div
-            key={`${item.id}-${index}`}
-            className="bg-opacity-40 backdrop-blur-md rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
+            key={item.id}
+            onClick={() => handleItemClick(item)}
+            className="bg-opacity-40 backdrop-blur-md rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105 cursor-pointer"
           >
             <div className="relative aspect-[2/3] bg-gray-800">
-              {/* Show placeholder while image loads */}
               <img
                 src={placeholderImage}
                 alt="Loading..."
@@ -142,41 +139,40 @@ const HomePage = () => {
           </div>
         ))}
       </div>
+    );
+  };
 
-      {loading && (
-        <div className="text-center py-4 space-y-2">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-          {retryCount > 0 && (
-            <p className="text-sm text-gray-500">
-              Retry attempt {retryCount} of {maxRetries}...
-            </p>
-          )}
+  return (
+    <div className="space-y-8">
+      <section className="text-center py-8">
+        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+          Welcome to MovieVerse
+        </h1>
+        <p className="text-lg opacity-75 mb-8">
+          Discover amazing movies and TV shows
+        </p>
+        <div className="max-w-2xl mx-auto">
+          <SearchBar onSearchResults={setSearchResults} />
         </div>
-      )}
+      </section>
 
-      {error && (
-        <div className="text-center py-4">
-          <p className="text-red-500 mb-2">{error}</p>
-          {retryCount >= maxRetries && (
-            <button
-              onClick={() => {
-                setRetryCount(0);
-                setError(null);
-                fetchTrendingContent(page);
-              }}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
-            >
-              Try Again
-            </button>
-          )}
-        </div>
-      )}
-
-      {!hasMore && !loading && !error && (
-        <div className="text-center py-4 text-gray-500">
-          No more content to load
-        </div>
-      )}
+      <section className="px-4">
+        {error ? (
+          <div className="text-center text-red-500">{error}</div>
+        ) : (
+          renderContent()
+        )}
+        {loading && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        )}
+        {!hasMore && !loading && !error && (
+          <div className="text-center py-8 opacity-75">
+            No more content to load
+          </div>
+        )}
+      </section>
     </div>
   );
 };
