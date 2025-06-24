@@ -3,6 +3,7 @@ import { getTrending } from '../services/tmdb';
 import { getEnhancedMovieDetails } from '../services/enhanced';
 import { throttle } from '../utils/debounce';
 import SearchBar from './SearchBar';
+import placeholderImage from '../assets/placeholder.svg';
 
 const HomePage = () => {
   const [trendingContent, setTrendingContent] = useState([]);
@@ -14,6 +15,11 @@ const HomePage = () => {
   const [retryCount, setRetryCount] = useState(0);
   const loadingRef = useRef(false);
   const maxRetries = 3;
+
+  const handleImageError = (e) => {
+    e.target.src = placeholderImage;
+    e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+  };
 
   const fetchTrendingContent = async (pageNum) => {
     if (loadingRef.current) return;
@@ -107,12 +113,23 @@ const HomePage = () => {
             key={`${item.id}-${index}`}
             className="bg-opacity-40 backdrop-blur-md rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
           >
-            <img
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt={item.title || item.name}
-              className="w-full h-[400px] object-cover"
-              loading="lazy"
-            />
+            <div className="relative aspect-[2/3] bg-gray-800">
+              {/* Show placeholder while image loads */}
+              <img
+                src={placeholderImage}
+                alt="Loading..."
+                className="absolute inset-0 w-full h-full object-contain opacity-50"
+              />
+              <img
+                src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : placeholderImage}
+                alt={item.title || item.name}
+                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
+                loading="lazy"
+                onError={handleImageError}
+                onLoad={(e) => e.target.style.opacity = '1'}
+                style={{ opacity: '0' }}
+              />
+            </div>
             <div className="p-4">
               <h3 className="font-semibold text-lg mb-2">{item.title || item.name}</h3>
               <div className="flex items-center space-x-2 text-sm opacity-75">
