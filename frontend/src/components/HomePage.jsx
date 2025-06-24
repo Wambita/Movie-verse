@@ -1,18 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getTrending } from '../services/tmdb';
 import { getEnhancedMovieDetails } from '../services/enhanced';
-import { debounce } from '../utils/debounce';
+import { throttle } from '../utils/debounce';
 
 const HomePage = () => {
   const [trendingContent, setTrendingContent] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
 
   const fetchTrendingContent = async (pageNum) => {
+    if (loadingRef.current) return;
+    
     try {
+      loadingRef.current = true;
       setLoading(true);
       setError(null);
+      
       const data = await getTrending(pageNum);
       const enhancedData = await Promise.all(
         data.results.map(async (item) => {
@@ -23,22 +29,26 @@ const HomePage = () => {
           return item;
         })
       );
+
       setTrendingContent(prev => pageNum === 1 ? enhancedData : [...prev, ...enhancedData]);
+      setHasMore(data.page < data.total_pages);
     } catch (err) {
       setError('Failed to fetch trending content');
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
   };
 
-  const debouncedScroll = useCallback(
-    debounce(() => {
-      if (window.innerHeight + document.documentElement.scrollTop
-          === document.documentElement.offsetHeight) {
-        setPage(prev => prev + 1);
+  const handleScroll = useCallback(
+    throttle(() => {
+      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 500) {
+        if (!loading && hasMore) {
+          setPage(prev => prev + 1);
+        }
       }
     }, 500),
-    []
+    [loading, hasMore]
   );
 
   useEffect(() => {
@@ -46,9 +56,9 @@ const HomePage = () => {
   }, [page]);
 
   useEffect(() => {
-    window.addEventListener('scroll', debouncedScroll);
-    return () => window.removeEventListener('scroll', debouncedScroll);
-  }, [debouncedScroll]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   return (
     <div className="space-y-8">
@@ -71,6 +81,7 @@ const HomePage = () => {
               src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
               alt={item.title || item.name}
               className="w-full h-[400px] object-cover"
+              loading="lazy"
             />
             <div className="p-4">
               <h3 className="font-semibold text-lg mb-2">{item.title || item.name}</h3>
@@ -94,6 +105,12 @@ const HomePage = () => {
       {error && (
         <div className="text-center py-4 text-red-500">
           {error}
+        </div>
+      )}
+
+      {!hasMore && !loading && (
+        <div className="text-center py-4 text-gray-500">
+          No more content to load
         </div>
       )}
     </div>
