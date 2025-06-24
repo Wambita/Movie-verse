@@ -1,65 +1,38 @@
 import { getMovieDetails, getTVDetails } from './tmdb';
-import { getMovieRatings } from './omdb';
+import { getMovieById } from './omdb';
 
-export const getEnhancedMovieDetails = async (movieId) => {
+const formatRatings = (ratings) => {
+  if (!ratings) return {};
+  return ratings.reduce((acc, rating) => {
+    acc[rating.Source.replace(/\s+/g, '')] = rating.Value;
+    return acc;
+  }, {});
+};
+
+export async function getEnhancedMovieDetails(tmdbId) {
   try {
-    // Get basic movie details from TMDB
-    const movieDetails = await getMovieDetails(movieId);
+    const tmdbData = await getMovieDetails(tmdbId);
+    if (!tmdbData.imdb_id) return tmdbData;
 
-    // If movie has IMDB ID, get additional ratings from OMDB
-    let ratings = null;
-    if (movieDetails.imdb_id) {
-      try {
-        ratings = await getMovieRatings(movieDetails.imdb_id);
-      } catch (omdbError) {
-        console.warn('Failed to fetch OMDB ratings:', omdbError);
-        // Continue without OMDB data if there's an error
-      }
+    try {
+      const omdbData = await getMovieById(tmdbData.imdb_id);
+      return {
+        ...tmdbData,
+        ratings: formatRatings(omdbData.Ratings),
+        metascore: omdbData.Metascore,
+        imdbRating: omdbData.imdbRating,
+      };
+    } catch (error) {
+      console.warn('Failed to fetch OMDB data:', error);
+      return tmdbData;
     }
-
-    return {
-      ...movieDetails,
-      enhanced_ratings: ratings,
-    };
   } catch (error) {
-    console.error('Error fetching enhanced movie details:', error);
+    console.error('Failed to fetch enhanced movie details:', error);
     throw error;
   }
-};
+}
 
-export const getEnhancedTVDetails = async (tvId) => {
-  try {
-    // For TV shows, we only have TMDB data as OMDB mainly focuses on movies
-    const tvDetails = await getTVDetails(tvId);
-
-    return {
-      ...tvDetails,
-      enhanced_ratings: {
-        imdbRating: tvDetails.vote_average,
-        imdbVotes: tvDetails.vote_count,
-        rottenTomatoesRating: 'N/A',
-        metacriticRating: 'N/A',
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching enhanced TV details:', error);
-    throw error;
-  }
-};
-
-export const formatRating = (rating) => {
-  if (!rating || rating === 'N/A') return 'N/A';
-  
-  // Handle percentage ratings (Rotten Tomatoes)
-  if (typeof rating === 'string' && rating.includes('%')) {
-    return rating;
-  }
-
-  // Handle decimal ratings (IMDB)
-  const numRating = parseFloat(rating);
-  if (!isNaN(numRating)) {
-    return numRating.toFixed(1);
-  }
-
-  return rating;
-};
+export async function getEnhancedTVDetails(tvId) {
+  // For now, we only return TMDB data for TV shows as OMDB's TV data is limited
+  return getTVDetails(tvId);
+}

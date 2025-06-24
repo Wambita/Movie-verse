@@ -1,14 +1,16 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import APITest from '../components/APITest';
+import HomePage from '../components/HomePage';
 import { ThemeProvider } from '../features/theme/ThemeContext';
 
-export default function Home() {
+const Home = () => {
   return (
     <ThemeProvider>
       <Layout>
-        <APITest />
+        <HomePage />
       </Layout>
     </ThemeProvider>
   );
-}
+};
+
+export default Home;

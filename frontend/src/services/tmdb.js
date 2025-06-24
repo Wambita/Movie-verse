@@ -1,70 +1,34 @@
-import axios from 'axios';
-
+const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || 'your_tmdb_api_key';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
-const tmdbApi = axios.create({
-  baseURL: TMDB_BASE_URL,
-  params: {
-    api_key: process.env.NEXT_PUBLIC_TMDB_API_KEY,
-  },
-});
+async function fetchFromTMDB(endpoint, params = {}) {
+  const queryParams = new URLSearchParams({
+    api_key: TMDB_API_KEY,
+    ...params
+  });
 
-export const getImageUrl = (path, size = 'original') => {
-  if (!path) return null;
-  return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
-};
-
-export const searchMulti = async (query, page = 1) => {
   try {
-    const response = await tmdbApi.get('/search/multi', {
-      params: {
-        query,
-        page,
-        include_adult: false,
-      },
-    });
-    return response.data;
+    const response = await fetch(`${TMDB_BASE_URL}${endpoint}?${queryParams}`);
+    if (!response.ok) throw new Error('TMDB API request failed');
+    return await response.json();
   } catch (error) {
-    console.error('Error searching TMDB:', error);
+    console.error('Error fetching from TMDB:', error);
     throw error;
   }
-};
+}
 
-export const getMovieDetails = async (movieId) => {
-  try {
-    const response = await tmdbApi.get(`/movie/${movieId}`, {
-      params: {
-        append_to_response: 'credits,videos,similar',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching movie details:', error);
-    throw error;
-  }
-};
+export async function getTrending(page = 1) {
+  return fetchFromTMDB('/trending/all/day', { page });
+}
 
-export const getTVDetails = async (tvId) => {
-  try {
-    const response = await tmdbApi.get(`/tv/${tvId}`, {
-      params: {
-        append_to_response: 'credits,videos,similar',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching TV details:', error);
-    throw error;
-  }
-};
+export async function searchMovies(query, page = 1) {
+  return fetchFromTMDB('/search/movie', { query, page });
+}
 
-export const getTrending = async (mediaType = 'all', timeWindow = 'day') => {
-  try {
-    const response = await tmdbApi.get(`/trending/${mediaType}/${timeWindow}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching trending:', error);
-    throw error;
-  }
-};
+export async function getMovieDetails(movieId) {
+  return fetchFromTMDB(`/movie/${movieId}`);
+}
+
+export async function getTVDetails(tvId) {
+  return fetchFromTMDB(`/tv/${tvId}`);
+}
