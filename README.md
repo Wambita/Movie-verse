@@ -4,12 +4,13 @@ MovieVerse is a responsive web application that allows users to discover, explor
 
 ## Features
 
-- Search for movies and TV shows with real-time results
+- Search for movies and TV shows with real-time results from TMDB API
 - View detailed information including title, plot, cast, release date, ratings, and poster
 - Add or remove movies and shows from a personal watchlist
 - Browse trending content by category or genre
 - Toggle between light and dark themes
 - Ratings integration from TMDB, IMDb, and Rotten Tomatoes
+- Infinite scroll / continuous loading of movies as the user scrolls
 
 ## Technologies Used
 
@@ -20,9 +21,38 @@ MovieVerse is a responsive web application that allows users to discover, explor
 - localStorage (for storing watchlist and preferences)
 - Git & GitHub for version control and code review
 
+## Tech Stack
+
+### Frontend (Next.js / React)
+
+* Next.js (React framework)
+* React functional components
+* React Hooks (useState, useEffect, useCallback, useRef)
+* Client-side routing (Next.js pages router)
+* Dynamic rendering
+* Conditional rendering
+* Infinite scrolling (Intersection Observer / scroll event-based fetching)
+* API data fetching using fetch / Axios
+* Environment variables (NEXT_PUBLIC_*)
+* CSS Modules / Tailwind CSS (if applicable)
+
+### Backend (Node.js)
+
+* Node.js
+* Express.js
+* REST API architecture
+* dotenv for environment management
+* CORS middleware
+* Helmet for security headers
+* Morgan for logging
+
+### External API
+
+* TMDB (The Movie Database API)
+
 ## Project Structure
 
-```
+````
 
 src/
 ├── assets/              # Static files and images
@@ -45,28 +75,27 @@ src/
 
 1. Clone the repository:
 
-```bash
+````bash
 git clone https://github.com/Wambita/Movie-verse.git
 cd Movie-verse
 ````
 
 2. Backend
 
-```
+````
 cd backend
 npm install
 npm run dev
-```
+````
 
 3.  Frontend
 
-```
+````
 cd frontend
 npm install
 npm run dev
-```
+````
 
-```
 
 ## Environment Variables
 
@@ -82,6 +111,78 @@ PORT=3001
 NEXT_PUBLIC_TMDB_API_KEY=your_api_key
 ```
 
+## Screenshots
+
+
+### Home Page (Trending Movies)
+
+![HomePage Trending](assets/movieverse.png)
+
+
+### Home Page Movies (Trending Movies)
+
+![HomePage movies](assets/movieverse1.png)
+
+
+### Home Page TV Shows (Trending Movies)
+
+![HomePage TV Shows](assets/movieverse2.png)
+
+### Search Functionality
+
+![Search Loading](assets/moviverse3.png)
+
+### Movie Details Page
+
+![WatchlistButton](assets/movieverse%205.png)
+
+### Watchlist 
+
+![WatchlistButton](assets/movieverse%206.png)
+
+### Light Mode
+
+![Light Mode](assets/movieverse%207.png)
+
+
+## Core React Concepts Used
+
+### Component Architecture
+
+* Reusable UI components
+* Separation of concerns between UI and data logic
+
+### Hooks
+
+* useState: state management for UI and API data
+* useEffect: lifecycle handling for API calls and updates
+* useRef: DOM references for scroll tracking / intersection observer
+* useCallback: optimization of repeated functions in scroll handlers
+
+### Data Fetching Patterns
+
+* Client-side API requests to backend
+* Asynchronous data fetching using async/await
+* Pagination or infinite scrolling API strategy
+* Debouncing/throttling for search input optimization (if implemented)
+
+### Performance Optimization
+
+* Conditional rendering to reduce unnecessary re-renders
+* Efficient API request handling for large datasets
+
+### Routing (Next.js)
+
+* File-based routing system
+* Dynamic routes for movie details pages
+
+## API Architecture
+
+Frontend → Backend → TMDB API
+
+* Frontend handles UI rendering and user interaction
+* Backend manages API requests securely
+* TMDB provides external movie data
 
 ## Development Workflow
 
@@ -119,126 +220,3 @@ This project is open-source and available under the MIT License.
 
 ## Author
 This project was  built and maintained  by **Wambita**
-
-
-
----
-
-## Tech Stack
-
-### Frontend (Next.js / React)
-
-* Next.js (React framework)
-* React functional components
-* React Hooks (useState, useEffect, useCallback, useRef)
-* Client-side routing (Next.js pages router)
-* Dynamic rendering
-* Conditional rendering
-* Infinite scrolling (Intersection Observer / scroll event-based fetching)
-* API data fetching using fetch / Axios
-* Environment variables (NEXT_PUBLIC_*)
-* CSS Modules / Tailwind CSS (if applicable)
-
-### Backend (Node.js)
-
-* Node.js
-* Express.js
-* REST API architecture
-* dotenv for environment management
-* CORS middleware
-* Helmet for security headers
-* Morgan for logging
-
-### External API
-
-* TMDB (The Movie Database API)
-
----
-
-## Key Features
-
-* Movie listing from TMDB API
-* Trending movies feed
-* Search functionality with dynamic query updates
-* Infinite scroll / continuous loading of movies as the user scrolls
-* Movie detail retrieval via API
-* Watchlist functionality (client-side state or persistence depending on implementation)
-* Responsive UI design for mobile and desktop
-* Separation of frontend and backend services for secure API handling
-
----
-
-## Core React Concepts Used
-
-This project demonstrates practical usage of modern React patterns:
-
-### Component Architecture
-
-* Reusable UI components
-* Separation of concerns between UI and data logic
-
-### Hooks
-
-* useState: state management for UI and API data
-* useEffect: lifecycle handling for API calls and updates
-* useRef: DOM references for scroll tracking / intersection observer
-* useCallback: optimization of repeated functions in scroll handlers
-
-### Data Fetching Patterns
-
-* Client-side API requests to backend
-* Asynchronous data fetching using async/await
-* Pagination or infinite scrolling API strategy
-* Debouncing/throttling for search input optimization (if implemented)
-
-### Performance Optimization
-
-* Lazy loading of data on scroll
-* Conditional rendering to reduce unnecessary re-renders
-* Efficient API request handling for large datasets
-
-### Routing (Next.js)
-
-* File-based routing system
-* Dynamic routes for movie details pages
-
----
-
-
-
-## API Architecture
-
-Frontend → Backend → TMDB API
-
-* Frontend handles UI rendering and user interaction
-* Backend manages API requests securely
-* TMDB provides external movie data
-
-
-
-## Screenshots
-
-Add screenshots of the application below:
-
-### Home Page (Trending Movies)
-
-Add image here
-
-### Search Functionality
-
-Add image here
-
-### Infinite Scroll Behavior
-
-Add image here
-
-### Movie Details Page
-
-Add image here
-
-### Watchlist Page
-
-Add image here
-
----
-
