@@ -55,21 +55,28 @@ MovieVerse is a responsive web application that allows users to discover, explor
 ## Project Structure
 
 ````
-
-src/
-├── assets/              # Static files and images
-├── components/          # Reusable UI components
-├── features/            # Feature-specific folders
-│   ├── search/
-│   ├── movie-details/
-│   ├── trending/
-│   ├── watchlist/
-│   └── theme/
-├── pages/               # Route-level components (optional)
-├── services/            # API logic (e.g., tmdb.js, omdb.js)
-├── utils/               # Utility functions (debounce, formatters, storage)
-├── App.jsx
-└── main.jsx
+Movie-verse/
+│
+├── assets/
+├── frontend/
+│   ├── pages/
+│   │   ├── index.jsx
+│   │   ├── watchlist.jsx
+│   │   ├── movie/[id].jsx
+│   │
+│   ├── components/
+│   ├── styles/
+│   ├── hooks/
+│   ├── utils/
+│   ├── .env.local
+│   └── package.json
+│
+├── backend/
+│   ├── server.js
+│   ├── routes/
+│   ├── controllers/
+│   ├── .env
+│   └── package.json
 
 ````
 
