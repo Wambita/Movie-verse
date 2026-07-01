@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import placeholderImage from '../assets/placeholder.svg';
+import Layout from './Layout';
 
 const MediaDetails = ({ media, onAddToWatchlist, isInWatchlist }) => {
   const [selectedTrailer, setSelectedTrailer] = useState(null);
@@ -25,6 +26,7 @@ const MediaDetails = ({ media, onAddToWatchlist, isInWatchlist }) => {
   };
 
   return (
+    <Layout>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Poster and Basic Info */}
@@ -131,6 +133,7 @@ const MediaDetails = ({ media, onAddToWatchlist, isInWatchlist }) => {
         </div>
       </div>
     </div>
+    </Layout>
   );
 };
 

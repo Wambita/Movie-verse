@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import MediaDetails from '../../components/MediaDetails';
 import { getMediaDetails } from '../../services/tmdb';
 import useWatchlist from '../../hooks/useWatchlist';
+import Layout from '../../components/Layout';
 
 const MediaDetailsPage = () => {
   const router = useRouter();
@@ -42,20 +43,24 @@ const MediaDetailsPage = () => {
 
   if (loading) {
     return (
+     <Layout>
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
+      </Layout> 
     );
   }
 
   if (error) {
     return (
+      <Layout>
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
           <p className="text-gray-600 dark:text-gray-400">{error}</p>
         </div>
       </div>
+      </Layout>
     );
   }
 
