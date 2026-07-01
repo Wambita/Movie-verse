@@ -1,5 +1,7 @@
 # MovieVerse
 
+![HomePage Trending](assets/movieverse.png)
+
 MovieVerse is a responsive web application that allows users to discover, explore, and manage their favorite movies and TV shows. It integrates with The Movie Database (TMDB) and the Open Movie Database (OMDB) to provide detailed information, real-time search, and a personalized experience through a watchlist feature.
 
 ## Features
